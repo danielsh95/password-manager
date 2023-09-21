@@ -1,15 +1,42 @@
+from random import choice, randint, shuffle
 from tkinter import *
+from tkinter import messagebox
+
+import pyperclip as pyperclip
+
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
+
+#Password Generator Project
+def generate_password():
+    letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+    numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+    symbols = ['!', '#', '$', '%', '&', '(', ')', '*', '+']
+
+    password_letters = [choice(letters) for _ in range(randint(8, 10))]
+    password_symbols = [choice(symbols) for _ in range(randint(2, 4))]
+    password_numbers = [choice(numbers) for _ in range(randint(2, 4))]
+
+    password_list = password_letters + password_symbols + password_numbers
+    shuffle(password_list)
+
+    password = "".join(password_list)
+    password_entry.insert(0, password)
+    pyperclip.copy(password)
+
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 
 def save():
 
-    with open("demofile.txt", "a") as f:
-        f.write(f"{website_entry.get()} | {email_entry.get()} | {password_entry.get()}\n")
-    website_entry.delete(0, END)
-    password_entry.delete(0, END)
+    if website_entry.get() == "" or email_entry.get() == "" or password_entry.get() == "":
+        messagebox.showinfo("Error!", "You can't to still fields nulls, fill everything!")
+    else:
+        with open("demofile.txt", "a") as f:
+            f.write(f"{website_entry.get()} | {email_entry.get()} | {password_entry.get()}\n")
+        website_entry.delete(0, END)
+        password_entry.delete(0, END)
+
 
 # ---------------------------- UI SETUP ------------------------------- #
 
@@ -43,7 +70,7 @@ password_entry = Entry(width=21)
 password_entry.grid(row=3, column=1)
 
 # Buttons
-generate_password_button = Button(text="Generate Password")
+generate_password_button = Button(text="Generate Password", command=generate_password)
 generate_password_button.grid(row=3, column=2)
 add_button = Button(text="Add", width=36, command=save)
 add_button.grid(row=4, column=1, columnspan=2)
